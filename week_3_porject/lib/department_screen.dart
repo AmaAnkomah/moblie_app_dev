@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'department_detail_screen.dart';
 
 class DepartmentsScreen extends StatelessWidget {
   const DepartmentsScreen({super.key});

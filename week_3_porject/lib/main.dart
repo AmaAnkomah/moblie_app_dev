@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'department_detail_screen.dart';
 import 'faculty_screen.dart';
 import 'department_screen.dart';
-import 'faculty_screen.dart';
-import 'department_detail_screen.dart';
 void main() {
   runApp(const CampusDirectoryApp());
 }
