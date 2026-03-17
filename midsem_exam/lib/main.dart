@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
-import 'screens/profile_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase as required by the exam.
+  // Using dummy initialization since we don't have google-services.json
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'dummy_api_key',
+      appId: 'dummy_app_id',
+      messagingSenderId: 'dummy_sender_id',
+      projectId: 'dummy_project_id',
+    )
+  );
   runApp(const MyApp());
 }
 
@@ -16,9 +28,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // Set the home screen to ProfileScreen as required by the navigation flow
-      home: const ProfileScreen(),
+      // Set the home screen to LoginScreen as required by the login flow
+      home: const LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
+

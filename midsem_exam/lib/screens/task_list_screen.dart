@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/task.dart';
 
 /// A stateful screen that displays a list of tasks.
@@ -12,11 +14,44 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  final List<Task> _tasks = [
-    Task(title: "Assignment 1", courseCode: "CS 301", dueDate: DateTime.now()),
-    Task(title: "Project Proposal", courseCode: "CS 302", dueDate: DateTime.now().add(const Duration(days: 2))),
-    Task(title: "Midterm Exam", courseCode: "CS 303", dueDate: DateTime.now().add(const Duration(days: 7))),
-  ];
+  static const String tasksKey = 'saved_tasks';
+  List<Task> _tasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksJson = prefs.getString(tasksKey);
+
+    if (tasksJson != null) {
+      // Decode the JSON list and map each map to a Task object
+      final List<dynamic> decodedList = json.decode(tasksJson);
+      setState(() {
+        _tasks = decodedList.map((item) => Task.fromJson(item)).toList();
+      });
+    } else {
+      // Load hardcoded list if no saved data exists
+      setState(() {
+        _tasks = [
+          Task(title: "Assignment 1", courseCode: "CS 301", dueDate: DateTime.now()),
+          Task(title: "Project Proposal", courseCode: "CS 302", dueDate: DateTime.now().add(const Duration(days: 2))),
+          Task(title: "Midterm Exam", courseCode: "CS 303", dueDate: DateTime.now().add(const Duration(days: 7))),
+        ];
+      });
+      _saveTasks();
+    }
+  }
+
+  Future<void> _saveTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Encode the list of tasks as a JSON string
+    final String encodedList = json.encode(_tasks.map((task) => task.toJson()).toList());
+    await prefs.setString(tasksKey, encodedList);
+  }
 
   String _formatDate(DateTime date) {
     return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
@@ -89,6 +124,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           dueDate: selectedDate!,
                         ));
                       });
+                      _saveTasks();
                       Navigator.pop(context);
                     }
                   },
@@ -129,6 +165,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                         setState(() {
                           task.isComplete = value;
                         });
+                        _saveTasks();
                       }
                     },
                   ),
@@ -142,3 +179,4 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 }
+
