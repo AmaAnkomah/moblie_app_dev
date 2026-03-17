@@ -8,9 +8,9 @@ class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   final Student student = const Student(
-    name: "John Doe",
-    studentId: "12345678",
-    programme: "Computer Science",
+    name: "Florence Ankomah",
+    studentId: "224CS02001273",
+    programme: "BSc. Computer Science",
     level: 300,
   );
 
